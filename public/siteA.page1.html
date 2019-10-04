@@ -8,9 +8,11 @@
     <script src="http://chaijs.com/chai.js" type="text/javascript"></script>
   </head>
   <body>
+    <h1>sieA, page1</h1>
+    <p>通常のアクセス（初期設定）。Cookieの保存期間の制約は掛からない</p>
     <div id="mocha"></div>
     <div id="target">
-      <a href="http://3rdpartytestwebkit.org:81/siteB.page1.html">next</a>
+      <a href="#" onclick="window.close()">close</a>
     </div>
 
     <script type="text/javascript">
@@ -19,7 +21,7 @@
 
         describe('site-A page-1', function() {
 
-          it('document.cookieに値を保存できる', function() {
+          it('key1, key2に値を保存', function() {
             const maxAge = 8 * 24 * 60 * 60; // 8day
             document.cookie = `key1=value1; max-age=${maxAge}`;
             document.cookie = `key2=value2; max-age=${maxAge}`;
@@ -28,24 +30,17 @@
             expect(cookies.key2).to.equals('value2')
           })
 
-          it('localStorageに値を保存できる', function() {
-            localStorage.setItem('key1', 'value1')
-            localStorage.setItem('key2', 'value2')
-            const value = localStorage.getItem('key1')
-            expect(value).to.equals('value1')
-            const value2 = localStorage.getItem('key2')
-            expect(value2).to.equals('value2')
-          })
-
         })
       }
     </script>
     <script type="text/javascript">
       mocha.setup("bdd")
       setup();
-      mocha.run(failed => {
-        if (failed) {
-          document.querySelector('#target').innerHtml = "failed"
+      mocha.run(() => {
+        if (window.opener) {
+          window.onunload = () => {
+            window.opener.postMessage('ok', 'http://localhost')
+          }
         }
       })
     </script>

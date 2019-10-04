@@ -8,9 +8,11 @@
     <script src="http://chaijs.com/chai.js" type="text/javascript"></script>
   </head>
   <body>
+    <h1>sieA, page3</h1>
+    <p>2 PV目に当たるがリンクデコレーションの制約はなくならない</p>
     <div id="mocha"></div>
     <div id="target">
-      <a href="http://3rdpartytestwebkit.org:81/siteB.page2.html">next</a>
+      <a href="#" onclick="window.close()">close</a>
     </div>
 
     <script type="text/javascript">
@@ -27,33 +29,18 @@
             expect(cookies.key3).to.equals('value3')
           })
 
-          it('localStorageから値を取得できる', function() {
-            const value1 = localStorage.getItem('key1')
-            const value2 = localStorage.getItem('key2')
-            const value3 = localStorage.getItem('key3')
-            expect(value1).to.equals('value1')
-            expect(value2).to.equals('value2')
-            expect(value3).to.equals('value3')
-          })
-
-          it('document.cookieに値を保存できる', function() {
+          it('key4に値を保存（有効期限が短い）', function() {
             const maxAge = 8 * 24 * 60 * 60; // 8day
             document.cookie = `key4=value4; max-age=${maxAge}`;
             const cookies = Object.fromEntries(document.cookie.split(';').map((v) => v.trim().split('=')))
             expect(cookies.key4).to.equals('value4')
           })
 
-          it('localStorageに値を保存できる', function() {
-            localStorage.setItem('key4', 'value4')
-            const value = localStorage.getItem('key4')
-            expect(value).to.equals('value4')
-          })
-
-          it('key2のcookieを上書きすると寿命が長くなる', function() {
+          it('key1のcookieを上書きすると寿命が短くなる', function() {
             const maxAge = 8 * 24 * 60 * 60; // 8day
-            document.cookie = `key2=value2; max-age=${maxAge}`;
+            document.cookie = `key1=value1; max-age=${maxAge}`;
             const cookies = Object.fromEntries(document.cookie.split(';').map((v) => v.trim().split('=')))
-            expect(cookies.key2).to.equals('value2')
+            expect(cookies.key1).to.equals('value1')
           })
 
         })
@@ -62,9 +49,11 @@
     <script type="text/javascript">
       mocha.setup("bdd")
       setup();
-      mocha.run(failed => {
-        if (failed) {
-          document.querySelector('#target').innerHtml = "failed"
+      mocha.run(() => {
+        if (window.opener) {
+          window.onunload = () => {
+            window.opener.postMessage('ok', 'http://localhost')
+          }
         }
       })
     </script>

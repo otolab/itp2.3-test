@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>index</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/6.2.0/mocha.min.css"/>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mocha/6.2.0/mocha.min.js"></script>
+    <script src="http://chaijs.com/chai.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <button type="button" onclick="start()">start</button>
+    <p>startを押すと子ウィンドウが開いてcookieの設定や遷移を実行します。</p>
+    <ul>
+      <li>ポップアップブロックが効いているとうまく開かないので、適宜ブロックを無効化してください。</li>
+      <li>キャッシュが残っているとsiteA, page4のreferrer省略のテストが失敗することがあります。</li>
+      <li>cookieの寿命をjavascriptから確認する方法がないので、適宜開発ツールからcookieのExpiresを確認してください（つまり目視確認が必要です）</li>
+    </ul>
+
+    <script type="text/javascript">
+      function setup() {
+        const {expect} = chai
+
+        describe('ITP 2.3挙動テスト', function() {
+
+          it('初期設定(siteA, page1)', function(done) {
+            this.timeout(-1);
+            const w = window.open('http://1stparty.localdomain/siteA.page1.html')
+            window.onmessage = (ev) => {
+              done()
+            }
+          })
+
+          it('リンク装飾付き遷移(siteB, page1 => siteA, page2 => siteA, page3)', function(done) {
+            this.timeout(-1);
+            const w = window.open('http://3rdpartytestwebkit.org/siteB.page1.html')
+            window.onmessage = (ev) => {
+              done()
+            }
+          })
+
+          it('リンク装飾なし、referrer装飾あり遷移(siteB, page2 => siteA, page4)', function(done) {
+            this.timeout(-1);
+            const w = window.open('http://3rdpartytestwebkit.org/siteB.page2.html')
+            window.onmessage = (ev) => {
+              done()
+            }
+          })
+
+          it('リンク装飾あり手動遷移(siteB, page4 => siteA, page5)', function(done) {
+            this.timeout(-1);
+            const w = window.open('http://3rdpartytestwebkit.org/siteB.page4.html')
+            window.onmessage = (ev) => {
+              done()
+            }
+          })
+
+        })
+      }
+    </script>
+
+    <script type="text/javascript">
+      mocha.setup("bdd")
+      setup();
+
+      function start() {
+        document.querySelector('button').disabled = true
+        mocha.run(failed => {
+          if (failed) {
+            document.querySelector('#target').innerHtml = "failed"
+          }
+        })
+      }
+    </script>
+
+  </body>
+</html>

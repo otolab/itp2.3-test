@@ -2,14 +2,14 @@
   <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-    <title>siteA page4</title>
+    <title>siteA page5</title>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/6.2.0/mocha.min.css"/>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mocha/6.2.0/mocha.min.js"></script>
     <script src="http://chaijs.com/chai.js" type="text/javascript"></script>
   </head>
   <body>
-    <h1>sieA, page4</h1>
-    <p>クエリ付きリファラは短縮される。クエリなしのランディングなのでリンクデコレーションの制約は掛からない</p>
+    <h1>sieA, page5</h1>
+    <p>能動的なクリックによる遷移でもクエリがついているとリンクデコレーションとみなされる</p>
     <div id="mocha"></div>
     <div id="target">
       <a href="#" onclick="window.close()">close</a>
@@ -19,17 +19,13 @@
       function setup() {
         const {expect} = chai
 
-        describe('site-A page-4', function() {
+        describe('site-A page-5', function() {
 
-          it('key5に値を保存', function() {
+          it('key6に値を保存（有効期限が短い）', function() {
             const maxAge = 8 * 24 * 60 * 60; // 8day
-            document.cookie = `key5=value5; max-age=${maxAge}`;
+            document.cookie = `key6=value6; max-age=${maxAge}`;
             const cookies = Object.fromEntries(document.cookie.split(';').map((v) => v.trim().split('=')))
-            expect(cookies.key5).to.equals('value5')
-          })
-
-          it('リファラは短縮されている', function() {
-            expect(document.referrer).to.equals('http://3rdpartytestwebkit.org/')
+            expect(cookies.key6).to.equals('value6')
           })
 
         })

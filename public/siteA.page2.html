@@ -8,9 +8,11 @@
     <script src="http://chaijs.com/chai.js" type="text/javascript"></script>
   </head>
   <body>
+    <h1>sieA, page2</h1>
+    <p>クエリ付きのランディングページ。リンクデコレーションの制約がかかる</p>
     <div id="mocha"></div>
     <div id="target">
-      <a href="http://example-site.localhost:81/siteA.page3.html">next</a>
+      <a href="http://1stparty.localdomain/siteA.page3.html">next</a>
     </div>
 
     <script type="text/javascript">
@@ -24,17 +26,11 @@
             expect(result).to.be.true
           })
 
-          it('document.cookieに値を保存できる（有効期限が短い）', function() {
+          it('key3に値を保存（有効期限が短い）', function() {
             const maxAge = 8 * 24 * 60 * 60; // 8day
             document.cookie = `key3=value3; max-age=${maxAge}`;
             const cookies = Object.fromEntries(document.cookie.split(';').map((v) => v.trim().split('=')))
             expect(cookies.key3).to.equals('value3')
-          })
-
-          it('localStorageに値を保存できる（有効期限が短い）', function() {
-            localStorage.setItem('key3', 'value3')
-            const value = localStorage.getItem('key3')
-            expect(value).to.equals('value3')
           })
 
           it('key2のcookieを上書きすると寿命が短くなる', function() {
@@ -45,7 +41,7 @@
           })
 
           it('リファラにクエリが含まれないとき短縮はされない', function() {
-            expect(document.referrer).to.equals('http://3rdpartytestwebkit.org:81/siteB.page1.html')
+            expect(document.referrer).to.equals('http://3rdpartytestwebkit.org/siteB.page1.html')
           })
 
         })
@@ -54,10 +50,7 @@
     <script type="text/javascript">
       mocha.setup("bdd")
       setup();
-      mocha.run(failed => {
-        if (failed) {
-          document.querySelector('#target').innerHtml = "failed"
-        }
+      mocha.run(() => {
       })
     </script>
   </body>
