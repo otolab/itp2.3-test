@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>siteA page4</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/6.2.0/mocha.min.css"/>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mocha/6.2.0/mocha.min.js"></script>
+    <script src="http://chaijs.com/chai.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <div id="target">
+      <a href="http://example-site.localhost:81/siteA.page1.html">next</a>
+    </div>
+
+    <script type="text/javascript">
+      function setup() {
+        const {expect} = chai
+
+        describe('site-A page-4', function() {
+
+          it('document.cookieに値を保存できる', function() {
+            const maxAge = 8 * 24 * 60 * 60; // 8day
+            document.cookie = `key5=value5; max-age=${maxAge}`;
+            const cookies = Object.fromEntries(document.cookie.split(';').map((v) => v.trim().split('=')))
+            expect(cookies.key5).to.equals('value5')
+          })
+
+          it('localStorageに値を保存できる', function() {
+            localStorage.setItem('key5', 'value5')
+            const value = localStorage.getItem('key5')
+            expect(value).to.equals('value5')
+          })
+
+          it('リファラは短縮されている', function() {
+            expect(document.referrer).to.equals('http://3rdpartytestwebkit.org:81/')
+          })
+
+        })
+      }
+    </script>
+    <script type="text/javascript">
+      mocha.setup("bdd")
+      setup();
+      mocha.run(failed => {
+        if (failed) {
+          document.querySelector('#target').innerHtml = "failed"
+        }
+      })
+    </script>
+  </body>
+</html>
