@@ -35,11 +35,7 @@
       mocha.setup("bdd")
       setup();
       mocha.run(() => {
-        if (window.opener) {
-          window.onunload = () => {
-            window.opener.postMessage('ok', 'http://localhost')
-          }
-        }
+        document.querySelectorAll('pre').forEach((el) => el.style = 'display: block')
       })
     </script>
   </body>
